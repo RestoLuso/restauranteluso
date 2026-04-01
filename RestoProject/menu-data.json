@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "name": "Bacalhau à Brás",
+      "description": "Shredded cod with potatoes, onions, and eggs",
+      "price": "",
+      "image": "bacalhau.svg"
+    },
+    {
+      "name": "Francesinha",
+      "description": "Hearty sandwich with steak, sausage, cheese, and rich sauce",
+      "price": "",
+      "image": "francesinha.svg"
+    },
+    {
+      "name": "Pastéis de Nata",
+      "description": "Classic Portuguese custard tarts",
+      "price": "",
+      "image": "pasteis.svg"
+    }
+  ]
+}

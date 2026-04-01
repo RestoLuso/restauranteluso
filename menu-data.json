@@ -1,0 +1,6 @@
+{
+  "items":[
+    {"name":"Bacalhau à Brás","description":"Shredded cod with potatoes and eggs","price":"14.50","image":"bacalhau.svg"},
+    {"name":"Francesinha","description":"Porto sandwich with melted cheese and sauce","price":"12.00","image":"francesinha.svg"}
+  ]
+}

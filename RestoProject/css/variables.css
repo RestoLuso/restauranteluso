@@ -1,0 +1,12 @@
+﻿/* css/variables.css */
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --muted:#9aa4b2;
+  --accent:#e76f51;
+  --accent-2:#f4a261;
+  --glass: rgba(255,255,255,0.04);
+  --radius:12px;
+  --text:#e6eef6;
+  --success:#2dd4bf;
+}

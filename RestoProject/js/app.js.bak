@@ -1,0 +1,127 @@
+﻿/* js/app.js - minimal interactive menu + cart + order summary (no external libs) */
+document.addEventListener('DOMContentLoaded', () => {
+  const menuList = document.getElementById('menu-list');
+  const cartPanel = document.getElementById('cart-panel');
+  const cartItemsEl = document.getElementById('cart-items');
+  const cartCount = document.getElementById('cart-count');
+  const cartSubtotalEl = document.getElementById('cart-subtotal');
+  const openCartBtn = document.getElementById('open-cart');
+  const clearCartBtn = document.getElementById('clear-cart');
+  const sendWhatsBtn = document.getElementById('send-whatsapp');
+  const sendEmailBtn = document.getElementById('send-email');
+  const yearEl = document.getElementById('year');
+  yearEl.textContent = new Date().getFullYear();
+
+  let cart = [];
+
+  function formatPrice(n){ return n.toFixed(2); }
+
+  function updateCartUI(){
+    cartItemsEl.innerHTML = '';
+    let subtotal = 0;
+    cart.forEach((it, idx) => {
+      subtotal += it.price * it.qty;
+      const row = document.createElement('div');
+      row.className = 'cart-row';
+      row.innerHTML = `
+        <div class="cart-row-left">
+          <strong>${it.name}</strong>
+          <div class="cart-qty">Qty: <button data-action="dec" data-idx="${idx}">-</button> <span>${it.qty}</span> <button data-action="inc" data-idx="${idx}">+</button></div>
+        </div>
+        <div class="cart-row-right">$${formatPrice(it.price * it.qty)}</div>
+      `;
+      cartItemsEl.appendChild(row);
+    });
+    cartCount.textContent = cart.reduce((s,i)=>s+i.qty,0);
+    cartSubtotalEl.textContent = formatPrice(subtotal);
+  }
+
+  function addToCart(item){
+    const found = cart.find(c=>c.name===item.name);
+    if(found) found.qty += 1; else cart.push({...item, qty:1});
+    updateCartUI();
+  }
+
+  function generateOrderSummary(){
+    if(cart.length===0) return 'Order is empty.';
+    let lines = [];
+    let total = 0;
+    lines.push('Order from Luso Restaurant');
+    lines.push('-------------------------');
+    cart.forEach(i=>{
+      lines.push(`${i.qty} x ${i.name} - $${formatPrice(i.price)} each => $${formatPrice(i.price * i.qty)}`);
+      total += i.price * i.qty;
+    });
+    lines.push('-------------------------');
+    lines.push(`Subtotal: $${formatPrice(total)}`);
+    lines.push('');
+    lines.push('Pickup/Delivery: [please specify]');
+    lines.push('Name: [your name]');
+    lines.push('Phone: [your phone]');
+    lines.push('Address (if delivery): [your address]');
+    return lines.join('\n');
+  }
+
+  function sendWhatsApp(){
+    const text = generateOrderSummary();
+    const url = 'https://wa.me/?text=' + encodeURIComponent(text);
+    window.open(url, '_blank');
+  }
+
+  function sendEmail(){
+    const subject = encodeURIComponent('New Order from Website');
+    const body = encodeURIComponent(generateOrderSummary());
+    const mailto = `mailto:reservations@example.com?subject=${subject}&body=${body}`;
+    window.open(mailto, '_blank');
+  }
+
+  openCartBtn.addEventListener('click', () => {
+    const hidden = cartPanel.getAttribute('aria-hidden') === 'true';
+    cartPanel.setAttribute('aria-hidden', String(!hidden));
+  });
+
+  clearCartBtn.addEventListener('click', () => { cart = []; updateCartUI(); });
+
+  cartItemsEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    const action = btn.dataset.action;
+    const idx = Number(btn.dataset.idx);
+    if(action === 'inc') { cart[idx].qty += 1; updateCartUI(); }
+    if(action === 'dec') { cart[idx].qty -= 1; if(cart[idx].qty<=0) cart.splice(idx,1); updateCartUI(); }
+  });
+
+  sendWhatsBtn.addEventListener('click', sendWhatsApp);
+  sendEmailBtn.addEventListener('click', sendEmail);
+
+  // load menu and render
+  fetch('menu-data.json').then(r=>r.json()).then(data=>{
+    const categories = Object.keys(data);
+    categories.forEach(cat=>{
+      const section = document.createElement('section');
+      section.className = 'menu-category';
+      section.innerHTML = `<h3>${cat.replace(/([A-Z])/g,' $1').trim()}</h3>`;
+      const list = document.createElement('div');
+      list.className = 'menu-items';
+      data[cat].forEach(item=>{
+        const card = document.createElement('div');
+        card.className = 'menu-item';
+        card.innerHTML = `
+          <div class="item-media"><img src="images/item-placeholder-400x300.jpg" alt="${item.name}" width="400" height="300"></div>
+          <div class="item-body">
+            <h4 class="item-name">${item.name}</h4>
+            <div class="item-price">$${formatPrice(item.price)}</div>
+            <div class="item-actions"><button class="add-btn">Add</button></div>
+          </div>
+        `;
+        card.querySelector('.add-btn').addEventListener('click', ()=> addToCart({name:item.name, price:Number(item.price)}));
+        list.appendChild(card);
+      });
+      section.appendChild(list);
+      menuList.appendChild(section);
+    });
+    updateCartUI();
+  }).catch(err=>{
+    menuList.innerHTML = '<p>Unable to load menu-data.json. Make sure the file exists.</p>';
+  });
+});
