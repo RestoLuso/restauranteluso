@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RestoLuso Menu</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Arial;margin:24px;color:#222}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0}
+    .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:20px}
+    .card{border:1px solid #ddd;padding:12px;border-radius:8px}
+    .price{font-weight:700;color:#0a6}
+    .pay{margin-top:12px}
+  </style>
+</head>
+<body>
+  <header><h1>RestoLuso</h1><div>Authentic Portuguese cuisine</div></header>
+  <p>Simple menu to get you live. Replace images in images/ and edit items below.</p>
+
+  <div class="menu">
+    <div class="card">
+      <div><strong>Bacalhau à Brás</strong></div>
+      <div>Shredded cod, potatoes, onions, olives</div>
+      <div class="price">14.50</div>
+      <div class="pay">
+        <form action="https://www.paypal.com/checkoutnow" method="get" target="_blank">
+          <input type="hidden" name="client_id" value="REPLACE_PAYPAL_CLIENT_ID">
+          <button type="submit">Pay with PayPal</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card">
+      <div><strong>Sardinhas Assadas</strong></div>
+      <div>Grilled sardines with lemon</div>
+      <div class="price">9.00</div>
+      <div class="pay"><button onclick="alert('Demo: replace with PayPal/Stripe flow')">Order</button></div>
+    </div>
+
+    <div class="card">
+      <div><strong>Pastel de Nata</strong></div>
+      <div>Portuguese custard tart</div>
+      <div class="price">2.50</div>
+      <div class="pay"><button onclick="alert('Demo: replace with PayPal/Stripe flow')">Order</button></div>
+    </div>
+  </div>
+</body>
+</html>
